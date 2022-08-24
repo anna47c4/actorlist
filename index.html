@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actorlist</title>
+  </head>
+  <body>
+    <header></header>
+    <!--   til pop-up vindue med detaljer om actoren -->
+    <aside id="popup">
+      <article class="details">
+        <p class="info"></p>
+      </article>
+    </aside>
+    <!--    Den tomme data-container, som min data klones ind i  -->
+    <section class="data-container"></section>
+    <!--    Min template / skabelon, for visningen af mine data for hver actor -->
+    <template>
+      <article class="actors">
+        <h1 class="name"></h1>
+        <p class="movie"></p>
+      </article>
+    </template>
+    <!--     Herunder starter script, og data hentes ind fra actors.json filen -->
+    <script>
+      const file = "actors.json";
+
+      async function getFile(file) {
+        const result = await fetch(file);
+        const json = await result.json();
+        show(json);
+      }
+
+      function show(json) {
+        const container = document.querySelector(".data-container");
+        const temp = document.querySelector("template");
+
+        json.forEach((actor) => {
+          let klon = temp.cloneNode(true).content;
+          klon.querySelector(".name").textContent = actor.fullname;
+          klon.querySelector(".movie").textContent = "Movie: " + actor.movie;
+          klon
+            .querySelector(".actors")
+            .addEventListener("click", () => details(actor));
+          container.appendChild(klon);
+        });
+      }
+
+      function details(actor) {
+        popup.querySelector(".info").textContent = actor.text;
+        popup.style.display = "block";
+      }
+
+      popup.addEventListener("click", () => (popup.style.display = "none"));
+
+      getFile(file);
+    </script>
+
+    <style>
+      body {
+        background-color: rgba(139, 0, 0, 0.755);
+      }
+      .data-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-gap: 6px;
+      }
+      .actors {
+        border: 1px solid gold;
+        border-radius: 25%;
+        margin: 5px;
+        padding: 10px;
+        display: grid;
+        place-items: center;
+      }
+      #popup {
+        display: none;
+        width: 100vw;
+        height: 100vh;
+        display: fixed;
+      }
+
+      #popup article {
+        max-width: 600px;
+        margin: auto;
+      }
+    </style>
+  </body>
+</html>
