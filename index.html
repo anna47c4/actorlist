@@ -14,11 +14,11 @@
     <title>Actorlist</title>
   </head>
   <body>
-    <!--   header og nav med filtreringsknapper herunder -->
+    <!--   nav med 'alle' filtreringsknap herunder -->
     <nav id="buttons">
-      <button data-movie="all" class="chosen">All movies</button>
-      <button data-movie="Fight Club">Fight club</button>
+      <button class="chosen" data-movie="all">All movies</button>
       <button data-movie="Pulp Fiction">Pulp Fiction</button>
+      <button data-movie="Fight Club">Fight Club</button>
       <button data-movie="Goodfellas">Goodfellas</button>
       <button data-movie="Inception">Inception</button>
     </nav>
@@ -42,11 +42,19 @@
       const file = "actors.json";
       let actors = [];
       let filter = "all";
+      let movies;
 
-      function start() {
-        const filtbut = document.querySelectorAll("#buttons button");
-        filtbut.forEach((butt) => butt.addEventListener("click", filtering));
-        getFile();
+      async function getFile(file) {
+        const result = await fetch(file);
+        actors = await result.json();
+        show();
+        callButtons();
+      }
+
+      function callButtons() {
+        document.querySelectorAll("#buttons button").forEach((elm) => {
+          elm.addEventListener("click", filtering);
+        });
       }
 
       function filtering() {
@@ -55,12 +63,6 @@
         this.classList.add("chosen");
         show();
         console.log("hej");
-      }
-
-      async function getFile(file) {
-        const result = await fetch(file);
-        actors = await result.json();
-        show();
       }
 
       function show(json) {
